@@ -26,3 +26,8 @@ urlpatterns = [
     path("api/", include("recipes.urls")),
     path("api-auth/", include("rest_framework.urls")),  
 ]
+from django.urls import path, include
+
+urlpatterns = [
+    path('api/', include('recipes.urls')),
+]
