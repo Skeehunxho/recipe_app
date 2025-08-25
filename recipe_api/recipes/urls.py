@@ -1,10 +1,9 @@
 from django.urls import path
-from .views import RecipeListCreateView, CategoryListView, register
-from rest_framework.authtoken.views import obtain_auth_token
+from .views import register, CustomAuthToken, RecipeListCreateView, CategoryListView
 
 urlpatterns = [
-    path("recipes/", RecipeListCreateView.as_view(), name="recipe-list-create"),
+    path("recipes/", RecipeListCreateView.as_view(), name="recipe-list"),
     path("categories/", CategoryListView.as_view(), name="category-list"),
     path("register/", register, name="register"),
-    path("login/", obtain_auth_token, name="login"),
+    path("login/", CustomAuthToken.as_view(), name="login"),
 ]
