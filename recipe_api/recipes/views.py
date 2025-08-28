@@ -20,20 +20,21 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
-@api_view(['POST'])
-def register(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
+from .serializers import RegisterSerializer 
 
-    if not username or not password:
-        return Response({"error": "Username and password required"}, status=status.HTTP_400_BAD_REQUEST)
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "Username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        user = self.serializer_class.Meta.model.objects.get(username=response.data["username"])
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response({
+            "token": token.key,
+            "username": user.username,
+            "user_id": user.id
+        }, status=status.HTTP_201_CREATED)
 
-    user = User.objects.create_user(username=username, password=password)
-    token, _ = Token.objects.get_or_create(user=user)
-    return Response({"token": token.key}, status=status.HTTP_201_CREATED)
 
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
