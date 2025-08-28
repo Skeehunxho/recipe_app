@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from .views import RegisterView, CustomAuthToken, RecipeListCreateView, CategoryListView
+from .views import RegisterView, LoginView, RecipeListCreateView, CategoryListView  #LoginView instead of CustomAuthToken
 
 
 # API root
@@ -21,5 +21,5 @@ urlpatterns = [
     path("recipes/", RecipeListCreateView.as_view(), name="recipe-list"),
     path("categories/", CategoryListView.as_view(), name="category-list"),
     path("register/", RegisterView.as_view(), name="register"),
-    path("login/", CustomAuthToken.as_view(), name="login"),
+    path("login/", LoginView.as_view(), name="login"), 
 ]
