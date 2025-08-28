@@ -45,10 +45,14 @@ class CustomAuthToken(ObtainAuthToken):
                                            context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
+        token = self.new_method(user)
         return Response({
             'token': token.key,
             'user_id': user.pk,
             'username': user.username
         })
+
+    def new_method(self, user):
+        token, created = Token.objects.get_or_create(user=user)
+        return token
 
