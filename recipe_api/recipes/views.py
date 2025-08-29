@@ -28,7 +28,7 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
-    permission_classes = [permissions.AllowAny]  # 👈 added this
+    permission_classes = [permissions.AllowAny]  
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -43,7 +43,7 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
-    permission_classes = [permissions.AllowAny]  # 👈 added this
+    permission_classes = [permissions.AllowAny]  
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

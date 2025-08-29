@@ -16,7 +16,7 @@ class ApiRootTests(APITestCase):
         self.assertEqual(set(response.data.keys()), expected_keys)
 
 
-# -------- AUTH TESTS --------
+# -------- AUTH TESTS 
 class AuthTests(APITestCase):
     def test_user_registration_and_token_returned(self):
         url = reverse("register")
@@ -39,7 +39,7 @@ class AuthTests(APITestCase):
         self.assertEqual(response.data["username"], user.username)
 
 
-# -------- RECIPE TESTS --------
+# -------- RECIPE TESTS 
 class RecipeTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="testpass123")
@@ -83,7 +83,7 @@ class RecipeTests(APITestCase):
         self.assertEqual(len(response.data), 1)
 
 
-# -------- CATEGORY TESTS --------
+# -------- CATEGORY TESTS 
 class CategoryTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="testpass123")

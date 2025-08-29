@@ -7,7 +7,7 @@ from .views import RegisterView, LoginView, RecipeListCreateView, CategoryListCr
 
 # API root
 @api_view(['GET'])
-@permission_classes([AllowAny])   # 👈 make root public
+@permission_classes([AllowAny])   
 def api_root(request, format=None):
     return Response({
         'recipes': reverse('recipe-list', request=request, format=format),
