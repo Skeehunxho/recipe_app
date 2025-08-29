@@ -20,9 +20,11 @@ class RecipeListCreateView(generics.ListCreateAPIView):
         serializer.save(created_by=self.request.user)
 
 
-class CategoryListView(generics.ListAPIView):
+class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 
 class RegisterView(generics.CreateAPIView):
