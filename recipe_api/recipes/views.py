@@ -26,9 +26,9 @@ class CategoryListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]  # 👈 added this
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
@@ -41,9 +41,9 @@ class RegisterView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-# New LoginView (to replace CustomAuthToken)
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
+    permission_classes = [permissions.AllowAny]  # 👈 added this
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
