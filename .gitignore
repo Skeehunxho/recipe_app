@@ -1,1 +1,30 @@
+# Django stuff
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+
+# Virtual environments
 venv/
+ENV/
+env/
+.venv/
+
+# VSCode / IDE settings
+.vscode/
+.idea/
+
+# Coverage / testing
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+coverage.txt
+
+# Django migrations (if you don’t want to ignore them, keep only the auto-created ones)
+*/migrations/__pycache__/
