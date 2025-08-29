@@ -9,6 +9,7 @@ from .serializers import (
     RegisterSerializer,
     LoginSerializer
 )
+from .permissions import IsOwnerOrReadOnly   # import your custom permission
 
 
 class RecipeListCreateView(generics.ListCreateAPIView):
@@ -56,3 +57,17 @@ class LoginView(generics.GenericAPIView):
             "username": user.username,
             "email": user.email,
         })
+    
+class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
+    def perform_update(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+
+class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

@@ -105,3 +105,73 @@ class CategoryTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
+
+class RecipeDetailTests(APITestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(username="user1", password="pass123")
+        self.user2 = User.objects.create_user(username="user2", password="pass123")
+        self.category = Category.objects.create(name="Dessert")
+        self.recipe = Recipe.objects.create(
+            title="Chocolate Cake",
+            description="Tasty and sweet",
+            ingredients="Flour, Sugar, Cocoa",
+            instructions="Mix and bake",
+            preparation_time=15,
+            cooking_time=30,
+            servings=4,
+            category=self.category,
+            created_by=self.user1   # ⚡ make sure field matches your model
+        )
+        self.url = reverse("recipe-detail", args=[self.recipe.id])
+
+    def test_retrieve_recipe(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], "Chocolate Cake")
+
+    def test_update_recipe_by_owner(self):
+        self.client.login(username="user1", password="pass123")
+        response = self.client.patch(self.url, {"title": "Updated Cake"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.recipe.refresh_from_db()
+        self.assertEqual(self.recipe.title, "Updated Cake")
+
+    def test_update_recipe_by_other_user_forbidden(self):
+        self.client.login(username="user2", password="pass123")
+        response = self.client.patch(self.url, {"title": "Hack Cake"})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_recipe_by_owner(self):
+        self.client.login(username="user1", password="pass123")
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Recipe.objects.filter(id=self.recipe.id).exists())
+
+    def test_delete_recipe_by_other_user_forbidden(self):
+        self.client.login(username="user2", password="pass123")
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Recipe.objects.filter(id=self.recipe.id).exists())
+
+class CategoryDetailTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="testpass123")
+        self.client.login(username="testuser", password="testpass123")
+        self.category = Category.objects.create(name="Lunch")
+        self.url = reverse("category-detail", args=[self.category.id])
+
+    def test_retrieve_category(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "Lunch")
+
+    def test_update_category(self):
+        response = self.client.patch(self.url, {"name": "Brunch"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.category.refresh_from_db()
+        self.assertEqual(self.category.name, "Brunch")
+
+    def test_delete_category(self):
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Category.objects.filter(id=self.category.id).exists())
